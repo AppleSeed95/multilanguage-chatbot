@@ -1,21 +1,23 @@
 
 require("../polyfill");
 
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import dynamic from "next/dynamic";
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from "react";
-
-import styles from "./home.module.scss";
-
+import {
+  useAccount,
+  useBalance,
+  useDisconnect
+} from "wagmi";
+import { Path, SlotID } from "../constant";
 import BotIcon from "../icons/bot.svg";
 import LoadingIcon from "../icons/three-dots.svg";
-
-import { getCSSVar, useMobileScreen } from "../utils";
-
-import dynamic from "next/dynamic";
-import { Path, SlotID } from "../constant";
-import { ErrorBoundary } from "./error";
-
 import { getISOLang, getLang } from "../locales";
+import { getCSSVar, useMobileScreen } from "../utils";
+import { ErrorBoundary } from "./error";
+import styles from "./home.module.scss";
 
 import {
   Route,
@@ -27,7 +29,6 @@ import { api } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { useAccessStore } from "../store";
 import { useAppConfig } from "../store/config";
-import { AuthPage } from "./auth";
 import { SideBar } from "./sidebar";
 
 export function Loading(props: { noLogo?: boolean }) {
@@ -136,19 +137,18 @@ function Screen() {
   }, []);
 
   return (
-      <div
+    <div
       className={
         styles.container +
-        ` ${shouldTightBorder ? styles["tight-container"] : styles.container} ${
-          getLang() === "ar" ? styles["rtl-screen"] : ""
+        ` ${shouldTightBorder ? styles["tight-container"] : styles.container} ${getLang() === "ar" ? styles["rtl-screen"] : ""
         }`
       }
     >
-      {isAuth ? (
+      {/* {isAuth ? (
         <>
           <AuthPage />
         </>
-      ) : (
+      ) : ( */}
         <>
           <SideBar className={isHome ? styles["sidebar-show"] : ""} />
 
@@ -162,7 +162,7 @@ function Screen() {
             </Routes>
           </div>
         </>
-      )}
+      {/* )} */}
     </div>
   );
 }
@@ -178,29 +178,170 @@ export function useLoadData() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }
-
+interface Model {
+  id: string;
+}
 export function Home() {
   useSwitchTheme();
   useLoadData();
   useHtmlLang();
+
+  const { address, isConnected } = useAccount()
+  const { disconnect } = useDisconnect()
+  const { data, isError } = useBalance({
+    address: address
+  })
+
+  const searchParams = useSearchParams();
+  const [apiKey, setApiKey] = useState('');
+  const [message, setMessage] = useState('');
+  const [models, setModels] = useState<Model[]>([]); // State to store model names
+  const [selectedModel, setSelectedModel] = useState(''); // State to store the selected model ID
+  const [inputText, setInputText] = useState(''); // State to store the entered text
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
     useAccessStore.getState().fetch();
   }, []);
 
+  useEffect(() => {
+
+    const storedApiKey = window.localStorage.getItem('apiKey');
+    if (storedApiKey) {
+      setApiKey(storedApiKey);
+    }
+
+    async function fetchApiData() {
+      // Check for the code in the URL query parameters
+      const code = searchParams.get('code');
+
+      if (code) {
+        const apiRoute = '/api/oauth'; // Adjust to your API route
+
+        // Prepare the request options
+        const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code })
+        };
+
+        try {
+          // Fetch data from your API route
+          const response = await fetch(apiRoute, requestOptions);
+          const data = await response.json();
+          // Handle the data from the API
+          console.log('Token or response received:', data);
+          if (data.key) {
+            // Store the key in localStorage and update state
+            // window.localStorage.setItem('apiKey', data.key);
+            // setApiKey(data.key);
+          }
+        } catch (error) {
+          // Handle any errors here
+          console.error('Error fetching data:', error);
+        }
+      }
+    }
+
+    async function fetchModels() {
+      try {
+        const response = await fetch('https://openrouter.ai/api/v1/models');
+        const data = await response.json();
+        setModels(data.data);
+
+        if (data.data.length > 0) {
+          setSelectedModel(data.data[0].id);
+        }
+      } catch (error) {
+        console.error("Error fetching models:", error);
+      }
+    }
+
+    fetchApiData();
+    fetchModels();
+
+  }, [searchParams]);
+
+
   if (!useHasHydrated()) {
     return <Loading />;
   }
 
+  const openRouterAuth = () => {
+    window.open('https://openrouter.ai/auth?callback_url=http://localhost:3000/')
+  }
+
+  const getCompletionsResponse = async () => {
+    setIsLoading(true);
+
+    const apiRoute = '/api/completions';
+
+    const requestBody = {
+      apiKey,
+      model: selectedModel,
+      text: inputText,
+    };
+
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody),
+    };
+
+    try {
+      // Fetch data from your API route
+      const response = await fetch(apiRoute, requestOptions);
+      const data = await response.json();
+      // Handle the data from the API
+      const messageResponse = data.choices[0].message.content
+      setMessage(messageResponse)
+      setIsLoading(false);
+
+    } catch (error) {
+      // Handle any errors here
+      console.error('Error fetching data:', error);
+      setIsLoading(false)
+    }
+  }
+
+  const handleModelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedModel(event.target.value); // Update the selectedModel state with the new value
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputText(event.target.value); // Update the inputText state with the new value
+  };
+
+
   return (
     <GoogleOAuthProvider clientId="712711246254-novdfqffvc0a90r4efagvo14semrnsgo.apps.googleusercontent.com">
-
-    <ErrorBoundary>
-      <Router>
-        <Screen />
-      </Router>
-    </ErrorBoundary>
+        {isConnected ?
+          <ConnectButton/>
+          :
+          <></>
+        }
+        {isConnected ? (
+          <>
+            <ErrorBoundary>
+              <Router>
+                <Screen />
+              </Router>
+            </ErrorBoundary>
+          </>
+        ) : (
+          // If API Key is not created show this component to login through OpenRouter
+          <>
+            <div className="w-full text-center border-b border-gray-300 bg-gradient-to-b from-white to-gray-100 pb-8 pt-10 backdrop-blur-lg dark:border-neutral-700 dark:bg-gray-900/80 dark:from-gray-800/80 lg:rounded-xl lg:border lg:p-6 lg:dark:bg-gray-800/80">
+              <p className='text-gray-800 dark:text-gray-200 text-lg font-light leading-relaxed mx-4'>
+                Login Metamask to get instant access to all OpenRouter Models with a quick log-in.
+              </p>
+              <div className="mt-8 w-full flex justify-center">
+              <ConnectButton/>
+              </div>
+            </div>
+          </>
+        )}
     </GoogleOAuthProvider>
   );
 }
