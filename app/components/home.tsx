@@ -6,6 +6,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import dynamic from "next/dynamic";
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from "react";
+import { Toaster, toast } from 'react-hot-toast';
 import {
   useAccount,
   useBalance,
@@ -264,6 +265,18 @@ export function Home() {
 
   }, [searchParams]);
 
+  useEffect(() => {
+    if(isConnected == true) {
+      toast.success('Hello! Successfully SignIned!', {
+        duration: 2000, // Display duration in milliseconds
+      });
+    } if(isConnected == false) {
+      toast.error('Hello! Log Out! SignIn again', {
+        duration: 2000, // Display duration in milliseconds
+      });
+    }
+  },[isConnected])
+
 
   if (!useHasHydrated()) {
     return <Loading />;
@@ -317,6 +330,7 @@ export function Home() {
 
   return (
     <GoogleOAuthProvider clientId="712711246254-novdfqffvc0a90r4efagvo14semrnsgo.apps.googleusercontent.com">
+        <Toaster />
         {isConnected ?
           <ConnectButton/>
           :

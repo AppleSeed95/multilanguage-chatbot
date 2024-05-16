@@ -3,8 +3,9 @@
 import { Analytics } from "@vercel/analytics/react";
 
 import {
+  darkTheme,
   getDefaultConfig,
-  RainbowKitProvider,
+  RainbowKitProvider
 } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
 import {
@@ -47,7 +48,7 @@ export default function App() {
     
         <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          <RainbowKitProvider>
+          <RainbowKitProvider theme={darkTheme()}> 
             <Home />
             {serverConfig?.isVercel && <Analytics />}
           </RainbowKitProvider>
