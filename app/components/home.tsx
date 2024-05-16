@@ -1,6 +1,7 @@
 
 require("../polyfill");
 
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import dynamic from "next/dynamic";
 import { useSearchParams } from 'next/navigation';
@@ -316,19 +317,19 @@ export function Home() {
 
   return (
     <GoogleOAuthProvider clientId="712711246254-novdfqffvc0a90r4efagvo14semrnsgo.apps.googleusercontent.com">
-        {/* {isConnected ?
+        {isConnected ?
           <ConnectButton/>
           :
           <></>
         }
         {isConnected ? (
-          <> */}
+          <>
             <ErrorBoundary>
               <Router>
                 <Screen />
               </Router>
             </ErrorBoundary>
-          {/* </>
+          </>
         ) : (
           // If API Key is not created show this component to login through OpenRouter
           <>
@@ -339,9 +340,9 @@ export function Home() {
               <div className="mt-8 w-full flex justify-center">
               <ConnectButton/>
               </div>
-            </div> */}
-          {/* </> */}
-        {/* )} */}
+            </div>
+          </>
+        )}
     </GoogleOAuthProvider>
   );
 }
