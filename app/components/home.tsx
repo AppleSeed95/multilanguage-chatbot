@@ -1,7 +1,6 @@
 
 require("../polyfill");
 
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import dynamic from "next/dynamic";
 import { useSearchParams } from 'next/navigation';
@@ -29,6 +28,7 @@ import { api } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { useAccessStore } from "../store";
 import { useAppConfig } from "../store/config";
+import { AuthPage } from "./auth";
 import { SideBar } from "./sidebar";
 
 export function Loading(props: { noLogo?: boolean }) {
@@ -144,11 +144,11 @@ function Screen() {
         }`
       }
     >
-      {/* {isAuth ? (
+      {isAuth ? (
         <>
           <AuthPage />
         </>
-      ) : ( */}
+      ) : (
         <>
           <SideBar className={isHome ? styles["sidebar-show"] : ""} />
 
@@ -162,7 +162,7 @@ function Screen() {
             </Routes>
           </div>
         </>
-      {/* )} */}
+      )}
     </div>
   );
 }
@@ -316,19 +316,19 @@ export function Home() {
 
   return (
     <GoogleOAuthProvider clientId="712711246254-novdfqffvc0a90r4efagvo14semrnsgo.apps.googleusercontent.com">
-        {isConnected ?
+        {/* {isConnected ?
           <ConnectButton/>
           :
           <></>
         }
         {isConnected ? (
-          <>
+          <> */}
             <ErrorBoundary>
               <Router>
                 <Screen />
               </Router>
             </ErrorBoundary>
-          </>
+          {/* </>
         ) : (
           // If API Key is not created show this component to login through OpenRouter
           <>
@@ -339,9 +339,9 @@ export function Home() {
               <div className="mt-8 w-full flex justify-center">
               <ConnectButton/>
               </div>
-            </div>
-          </>
-        )}
+            </div> */}
+          {/* </> */}
+        {/* )} */}
     </GoogleOAuthProvider>
   );
 }

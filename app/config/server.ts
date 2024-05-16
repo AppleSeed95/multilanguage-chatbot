@@ -3,7 +3,7 @@ import md5 from "spark-md5";
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      OPENAI_API_KEY?: string;
+      OPENROUTER_API_KEY?: string;
       CODE?: string;
       BASE_URL?: string;
       PROXY_URL?: string;

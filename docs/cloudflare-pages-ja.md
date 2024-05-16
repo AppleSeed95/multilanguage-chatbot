@@ -19,7 +19,7 @@ GitHub でこのプロジェクトをフォークし、dash.cloudflare.com に�
 11. "Environment variables" は、">" をクリックし、"Add variable" をクリックします。そして以下の情報を入力します:
     - `NODE_VERSION=20.1`
     - `NEXT_TELEMETRY_DISABLE=1`
-    - `OPENAI_API_KEY=your_own_API_key`
+    - `OPENROUTER_API_KEY=your_own_API_key`
     - `YARN_VERSION=1.22.19`
     - `PHP_VERSION=7.4`
 

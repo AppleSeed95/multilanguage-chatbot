@@ -18,10 +18,10 @@ Cuando bifurca este proyecto desde Github y necesita crear un nuevo proyecto de 
 ![vercel-create-3](./images/vercel/vercel-create-3.jpg)
 
 1.  En la página de configuración del proyecto, haga clic en Variables de entorno para configurar las variables de entorno;
-2.  Agregar variables de entorno denominadas OPENAI_API_KEY y CODE;
+2.  Agregar variables de entorno denominadas OPENROUTER_API_KEY y CODE;
 3.  Rellenar los valores correspondientes a las variables de entorno;
 4.  Haga clic en Agregar para confirmar la adición de variables de entorno;
-5.  Asegúrese de agregar OPENAI_API_KEY, de lo contrario no funcionará;
+5.  Asegúrese de agregar OPENROUTER_API_KEY, de lo contrario no funcionará;
 6.  Haga clic en Implementar, créelo y espere pacientemente unos 5 minutos a que se complete la implementación.
 
 ## Cómo agregar un nombre de dominio personalizado

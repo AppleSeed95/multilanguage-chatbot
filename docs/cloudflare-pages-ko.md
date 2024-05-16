@@ -20,7 +20,7 @@
 
     - node_version=20.1`.
     - next_telemetry_disable=1`.
-    - `OPENAI_API_KEY=자신의 API 키`
+    - `OPENROUTER_API_KEY=자신의 API 키`
     - ``yarn_version=1.22.19``
     - ``php_version=7.4``.
 

@@ -18,10 +18,10 @@
 ![vercel-create-3](./images/vercel/vercel-create-3.jpg)
 
 1.  Project Settings ページで、Environment Variables をクリックして環境変数を設定する;
-2.  OPENAI_API_KEY と CODE という名前の環境変数を追加します;
+2.  OPENROUTER_API_KEY と CODE という名前の環境変数を追加します;
 3.  環境変数に対応する値を入力します;
 4.  Add をクリックして、環境変数の追加を確認する;
-5.  OPENAI_API_KEY を必ず追加してください;
+5.  OPENROUTER_API_KEY を必ず追加してください;
 6.  Deploy をクリックして作成し、デプロイが完了するまで約 5 分間辛抱強く待つ。
 
 ## カスタムドメイン名の追加方法
