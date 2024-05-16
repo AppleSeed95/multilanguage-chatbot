@@ -201,6 +201,7 @@ export function Home() {
   const [selectedModel, setSelectedModel] = useState(''); // State to store the selected model ID
   const [inputText, setInputText] = useState(''); // State to store the entered text
   const [isLoading, setIsLoading] = useState(false);
+  console.log("your balance is ", data?.formatted || "");
 
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
@@ -267,9 +268,12 @@ export function Home() {
 
   useEffect(() => {
     if(isConnected == true) {
-      toast.success('Hello! Successfully SignIned!', {
-        duration: 2000, // Display duration in milliseconds
+      toast.success(`Hello! Successfully SignIned!
+                      Your wallet balance is ${data?.formatted || ""}ETH`, {
+        duration: 4000, // Display duration in milliseconds
       });
+      
+      
     } if(isConnected == false) {
       toast.error('Hello! Log Out! SignIn again', {
         duration: 2000, // Display duration in milliseconds
